@@ -10,14 +10,13 @@ import paho.mqtt.client as mqtt
 BROKER_HOST = "192.168.86.42"
 BROKER_PORT = 1883
 MQTT_TOPIC = "house/pictures"
-MQTT_CLIENT_ID = "id-9151569"
 GPIO_IO = 4
 camera_instance = PiCamera()
 
 def instantiate_mqtt_client():
     client = ""
     try:
-        client = mqtt.Client(MQTT_CLIENT_ID)
+        client = mqtt.Client()
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
         #client.loop_start()
     except Exception as e:

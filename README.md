@@ -1,7 +1,7 @@
 The entire solution is a proof of concept for secure entrance in a restricted area using motion detector, audio notification and face recognition.  
   
 The solution was built in modules (decoupling the components) to enable plug and play N devices.  
-  
+
 -----------------------------------------------------------------------------------------
 
 sensorcameraapp.py  App

@@ -6,14 +6,13 @@ import pygame
 BROKER_HOST = "192.168.86.42"
 BROKER_PORT = 1883
 MQTT_TOPIC = "house/texttospeech"
-MQTT_CLIENT_ID = "id-321"
 
 def instantiate_mqtt_client():
     client = ""
     try:
-        client = mqtt.Client(MQTT_CLIENT_ID)
+        client = mqtt.Client()
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
-        client.subscribe(MQTT_TOPIC)
+        #client.subscribe(MQTT_TOPIC) #moved to on_connect to guarantee subscription in case of reconnection
 
         #attach callback functions
         client.on_message=on_message
@@ -47,10 +46,11 @@ def play_text(message):
 
 # callback method to act when the connection is closed by the broker or by the client
 def on_disconnect(client, userdata, rc):
-   print("client disconnected ok")
+    print("client disconnected status: ", rc)
 
 def on_connect(client, userdata, flags, rc):
-   print("client connected ok")
+    print("client connected status: ", rc)
+    client.subscribe(MQTT_TOPIC)
 
 # callback method to receive the message when published on the topic this client has subscribed
 def on_message(client, userdata, message):

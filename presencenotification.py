@@ -7,13 +7,12 @@ import paho.mqtt.client as mqtt
 BROKER_HOST = "192.168.86.42"
 BROKER_PORT = 1883
 MQTT_TOPIC = "house/texttospeech"
-MQTT_CLIENT_ID = "id-14332"
 GPIO_IO = 27
 
 def instantiate_mqtt_client():
     client = ""
     try:
-        client = mqtt.Client(MQTT_CLIENT_ID)
+        client = mqtt.Client()
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
         #client.loop_start()
     except Exception as e:

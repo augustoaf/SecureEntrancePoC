@@ -14,23 +14,20 @@ processed_images_path = '/home/pi/workspace/images/processed'
 BROKER_HOST = "192.168.86.42"
 BROKER_PORT = 1883
 MQTT_TOPIC_SUB = "house/pictures"
-MQTT_CLIENT_ID_SUB = "id-8888"
 MQTT_TOPIC_PUB = "house/texttospeech"
-MQTT_CLIENT_ID_PUB = "id-8888-2"
-
 
 def instantiate_mqtt_client_and_subscribe():
     client = ""
     try:
-        client = mqtt.Client(MQTT_CLIENT_ID_SUB)
+        client = mqtt.Client()
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
-        client.subscribe(MQTT_TOPIC_SUB)
+        #client.subscribe(MQTT_TOPIC_SUB) #moved to on_connect to guarantee subscription in case of reconnection
 
         #bind callback functions
-        client.on_message = on_message
-        client.on_disconnect = on_disconnect
-        client.on_connect = on_connect
-        client.on_log = on_log
+        client.on_message = on_message_clientsub
+        client.on_disconnect = on_disconnect_clientsub
+        client.on_connect = on_connect_clientsub
+        client.on_log = on_log_clientsub
 
         client.loop_start()
     except Exception as e:
@@ -40,26 +37,26 @@ def instantiate_mqtt_client_and_subscribe():
     return client
 
 # callback method to act when the connection is closed by the broker or by the client
-def on_disconnect(client, userdata, rc):
-   print("client disconnected ok")
+def on_disconnect_clientsub(client, userdata, rc):
+   print("client disconnected status: ", rc)
 
-def on_connect(client, userdata, flags, rc):
-   print("client connected ok")
-   #renew subscrition??
+def on_connect_clientsub(client, userdata, flags, rc):
+   print("client connected status: ", rc)
+   client.subscribe(MQTT_TOPIC_SUB)
 
 # callback method to receive the message when published on the topic this client has subscribed
-def on_message(client, userdata, message):
+def on_message_clientsub(client, userdata, message):
     message_converted = str(message.payload.decode("utf-8"))
-    print("message received on topic ", message.topic, ": " ,message_converted)
+    print("message received on topic ", message.topic, ": " , message_converted)
     recognize_face(message_converted)
 
 # callback method for log
-def on_log(client, userdata, level, buf):
-    print("log: ",buf)
+def on_log_clientsub(client, userdata, level, buf):
+    print("log: ", buf)
 
 def send_message(payload):
     try:
-        client = mqtt.Client(MQTT_CLIENT_ID_PUB)
+        client = mqtt.Client()
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
         client.publish(MQTT_TOPIC_PUB,payload)
         client.disconnect()
