@@ -26,11 +26,11 @@ def instantiate_mqtt_client_and_subscribe():
         client.connect(BROKER_HOST, port=BROKER_PORT, keepalive=60)
         client.subscribe(MQTT_TOPIC_SUB)
 
-        #attach callback functions
-        client.on_message=on_message
+        #bind callback functions
+        client.on_message = on_message
         client.on_disconnect = on_disconnect
         client.on_connect = on_connect
-        client.on_log=on_log
+        client.on_log = on_log
 
         client.loop_start()
     except Exception as e:
@@ -39,7 +39,7 @@ def instantiate_mqtt_client_and_subscribe():
             
     return client
 
-# callback method to act when the connection is closed by the broker
+# callback method to act when the connection is closed by the broker or by the client
 def on_disconnect(client, userdata, rc):
    print("client disconnected ok")
 

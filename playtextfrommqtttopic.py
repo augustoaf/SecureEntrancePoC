@@ -45,13 +45,12 @@ def play_text(message):
     
     print("audio play done!")
 
-# callback method to act when the connection is closed by the broker
+# callback method to act when the connection is closed by the broker or by the client
 def on_disconnect(client, userdata, rc):
    print("client disconnected ok")
 
 def on_connect(client, userdata, flags, rc):
    print("client connected ok")
-   #renew subscrition??
 
 # callback method to receive the message when published on the topic this client has subscribed
 def on_message(client, userdata, message):
@@ -75,6 +74,7 @@ def main():
 
     except KeyboardInterrupt:
         client.loop_stop()
+        client.disconnect()
         print ( "App stopped" )
 
 if __name__ == '__main__':
